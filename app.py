@@ -1,5 +1,5 @@
 """Servidor local de Plano Estudio: ejecutar python app.py."""
-import base64, io, json, os, secrets, tempfile, threading, webbrowser
+import base64, io, json, os, secrets, socketserver, tempfile, threading, webbrowser
 import urllib.request, urllib.error
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http.cookies import SimpleCookie
@@ -184,8 +184,17 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:
             self.send({'error':str(e)[:800]},400)
 
+class PlanoServer(HTTPServer):
+    """Como HTTPServer pero sin socket.getfqdn() en server_bind: esa resolución DNS
+    inversa se cuelga en algunas redes/VPN y dejaba el servidor sin arrancar."""
+    def server_bind(self):
+        socketserver.TCPServer.server_bind(self)
+        host, port = self.server_address[:2]
+        self.server_name = host
+        self.server_port = port
+
 if __name__=='__main__':
-    server=HTTPServer((BIND,PORT),Handler)
+    server=PlanoServer((BIND,PORT),Handler)
     where=f'http://127.0.0.1:{PORT}' if BIND in ('127.0.0.1','localhost') else f'puerto {PORT} (bind {BIND})'
     print(f'Plano Estudio abierto en {where}')
     print('Protegido con contraseña.' if PASSWORD else 'Sin contraseña (modo local). Define PLANO_PASSWORD para exigir login.')
