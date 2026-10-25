@@ -9,6 +9,7 @@ import cad
 
 ROOT=Path(__file__).resolve().parent
 
+_ENV_FILE_KEYS=set()   # claves ya fijadas por un fichero .env (para la prioridad .env.local > .env)
 def load_env():
     """Carga variables desde .env.local (prioritario) y .env sin dependencias externas."""
     for name in ('.env.local','.env'):
@@ -19,7 +20,11 @@ def load_env():
             if not line or line.startswith('#') or '=' not in line: continue
             k,v=line.split('=',1)
             v=v.strip().strip('"').strip("'")
-            os.environ.setdefault(k.strip(),v)   # el primero gana: .env.local manda
+            k=k.strip()
+            # El .env local manda sobre el entorno (evita claves viejas exportadas en el shell).
+            # .env.local tiene prioridad sobre .env (se carga primero y no se re-escribe).
+            if name=='.env.local' or k not in _ENV_FILE_KEYS:
+                os.environ[k]=v; _ENV_FILE_KEYS.add(k)
 
 load_env()
 
@@ -52,7 +57,8 @@ def context(prompt):
 def ask_ai(prompt,key,model):
     if not key: key=os.environ.get('OPENAI_API_KEY','')
     if not key: raise ValueError('Falta la clave de API. Puedes usar el modo «Usar este chat» sin clave.')
-    payload={'model':model,'instructions':cad.INSTRUCTIONS,'input':'ESTADO:\n'+json.dumps(cad.summary(DOC),ensure_ascii=False)+'\nPETICIÓN:\n'+prompt,'text':{'format':{'type':'json_object'}},'max_output_tokens':16000,'store':False}
+    # OpenAI exige que el input contenga la palabra «json» para usar text.format json_object.
+    payload={'model':model,'instructions':cad.INSTRUCTIONS,'input':'Devuelve exclusivamente un objeto json válido.\nESTADO:\n'+json.dumps(cad.summary(DOC),ensure_ascii=False)+'\nPETICIÓN:\n'+prompt,'text':{'format':{'type':'json_object'}},'max_output_tokens':16000,'store':False}
     req=urllib.request.Request('https://api.openai.com/v1/responses',data=json.dumps(payload).encode(),headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'})
     try:
         with urllib.request.urlopen(req,timeout=180) as response: result=json.load(response)
