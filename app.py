@@ -26,6 +26,7 @@ load_env()
 TOKEN=secrets.token_urlsafe(32)       # anti-CSRF: va incrustado en la página servida
 AUTH=secrets.token_urlsafe(32)        # cookie de sesión tras iniciar sesión con contraseña
 PASSWORD=os.environ.get('PLANO_PASSWORD','')   # vacío = sin login (cómodo en local)
+HAS_KEY=bool(os.environ.get('OPENAI_API_KEY','').strip())  # True = la app ya tiene clave; la UI no la pide
 PORT=int(os.environ.get('PLANO_PORT') or os.environ.get('PORT') or '8765')
 BIND=os.environ.get('PLANO_BIND','127.0.0.1')  # usa 0.0.0.0 para desplegar
 # Hosts públicos permitidos al desplegar (coma-separados). '*' = cualquiera (la contraseña protege).
@@ -98,7 +99,7 @@ class Handler(BaseHTTPRequestHandler):
         route=self.path.split('?')[0]
         if route=='/':
             page='static/login.html' if (PASSWORD and not self.authed()) else 'static/index.html'
-            s=(ROOT/page).read_text(encoding='utf-8').replace('__TOKEN__',TOKEN)
+            s=(ROOT/page).read_text(encoding='utf-8').replace('__TOKEN__',TOKEN).replace('__HASKEY__','true' if HAS_KEY else 'false')
             return self.send(s,mime='text/html; charset=utf-8')
         if route in ('/app.js','/login.js','/style.css'):
             return self.send((ROOT/'static'/route[1:]).read_bytes(),mime='text/javascript' if route.endswith('.js') else 'text/css')

@@ -1,4 +1,6 @@
 const $=id=>document.getElementById(id), token=document.querySelector('meta[name="token"]').content;
+const hasKey=document.querySelector('meta[name="has-key"]').content==='true';
+if(hasKey){$('key').hidden=true;$('keyLabel').hidden=true;$('apiHelper').textContent='La app ya tiene una clave de API configurada en el servidor. Pulsa «Generar» para crear el plano (tiene coste de uso).';}
 let imageURL=null, zoom=1, pending=false;
 function status(message,error=false){$('status').textContent=message;$('status').classList.toggle('error',error);}
 async function call(path,data){const r=await fetch(path,{method:data===undefined?'GET':'POST',headers:{'Content-Type':'application/json','X-Plano-Token':token},body:data===undefined?undefined:JSON.stringify(data)});if(!r.ok){const e=await r.json();throw Error(e.error||'Error inesperado');}return r;}
