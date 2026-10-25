@@ -21,20 +21,22 @@ La app puede exigir contraseña para entrar. Se controla con la variable de ento
 
 La clave de API (`OPENAI_API_KEY`) y la contraseña nunca se guardan en el repositorio: van en `.env.local` (local, ignorado por git) o en las variables del host (despliegue). La plantilla `.env.example` documenta todas las variables.
 
-## Desplegar en internet (Render) con contraseña
+## Desplegar en internet (Railway) con contraseña
 
-Esta app es un servidor con estado en memoria, así que necesita un host de **proceso persistente** (Render, Railway, Fly). **No** funciona en plataformas serverless como Vercel.
+Esta app es un servidor con estado en memoria, así que necesita un host de **proceso persistente** (Railway, Fly, Render). **No** funciona en plataformas serverless como Vercel.
 
-Pasos en Render (plan gratuito):
+Recomendado: **Railway** (no se duerme → arranque instantáneo).
 
-1. Entra en https://render.com e inicia sesión con GitHub.
-2. **New → Blueprint** y elige este repositorio. Render lee `render.yaml` y configura el servicio solo.
-3. Define los secretos cuando los pida:
+1. Entra en https://railway.app e inicia sesión con GitHub.
+2. **New Project → Deploy from GitHub repo** y elige `plano-estudio`. Railway detecta Python, instala `requirements.txt` y arranca con el `Procfile` (`python app.py`).
+3. En la pestaña **Variables** del servicio, añade los secretos:
    - `PLANO_PASSWORD` → la contraseña de acceso (obligatoria).
-   - `OPENAI_API_KEY` → opcional, solo si quieres el modo «IA conectada» sin que cada usuario meta su clave.
-4. **Create**. En unos minutos tendrás una URL `https://plano-estudio-XXXX.onrender.com` protegida con contraseña.
+   - `OPENAI_API_KEY` → la clave de OpenAI (para generar planos con IA).
 
-El plan gratuito de Render «duerme» el servicio tras un rato sin uso; la primera visita tras dormir tarda unos segundos en despertar. Al despertar, el plano en memoria se reinicia: descarga el DXF antes de cerrar.
+   El puerto, el bind `0.0.0.0` y los hosts permitidos se configuran **solos** al detectar que está desplegado; no hace falta tocarlos.
+4. En **Settings → Networking → Generate Domain** obtienes la URL pública `https://plano-estudio-XXXX.up.railway.app`, protegida con contraseña.
+
+Railway no duerme el servicio, así que no hay arranque en frío tras inactividad. El plano sigue en memoria mientras el servicio esté activo (solo se reinicia al redesplegar): descarga el DXF para guardarlo.
 
 ## Crear o cambiar un plano mediante este chat
 

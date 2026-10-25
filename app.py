@@ -32,10 +32,13 @@ TOKEN=secrets.token_urlsafe(32)       # anti-CSRF: va incrustado en la página s
 AUTH=secrets.token_urlsafe(32)        # cookie de sesión tras iniciar sesión con contraseña
 PASSWORD=os.environ.get('PLANO_PASSWORD','')   # vacío = sin login (cómodo en local)
 HAS_KEY=bool(os.environ.get('OPENAI_API_KEY','').strip())  # True = la app ya tiene clave; la UI no la pide
+ON_HOST=bool(os.environ.get('PORT'))  # Railway/Render/etc. definen PORT → estamos desplegados
 PORT=int(os.environ.get('PLANO_PORT') or os.environ.get('PORT') or '8765')
-BIND=os.environ.get('PLANO_BIND','127.0.0.1')  # usa 0.0.0.0 para desplegar
-# Hosts públicos permitidos al desplegar (coma-separados). '*' = cualquiera (la contraseña protege).
+# En un host hay que escuchar en 0.0.0.0; en local, solo 127.0.0.1.
+BIND=os.environ.get('PLANO_BIND') or ('0.0.0.0' if ON_HOST else '127.0.0.1')
+# Hosts públicos permitidos (coma-separados). '*' = cualquiera (la contraseña protege).
 ALLOWED_HOSTS={h.strip() for h in os.environ.get('PLANO_ALLOWED_HOSTS','').split(',') if h.strip()}
+if not ALLOWED_HOSTS and ON_HOST: ALLOWED_HOSTS={'*'}  # en despliegue acepta el dominio del host
 LOCAL_HOSTS={f'127.0.0.1:{PORT}',f'localhost:{PORT}'}
 
 DOC=cad.fresh(); HISTORY=[]; PROPOSAL=None
