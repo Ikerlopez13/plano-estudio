@@ -1,0 +1,9 @@
+# Secretos (NUNCA subir). Solo se sube la plantilla .env.example.
+.env
+.env.*
+!.env.example
+
+# Entorno y temporales
+.venv/
+__pycache__/
+.vercel/

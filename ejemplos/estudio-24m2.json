@@ -1,0 +1,192 @@
+{
+  "summary": "Ejemplo: estudio de 6 × 4 m entre ejes de muros, puerta y ventana.",
+  "assumptions": [
+    "Dimensiones entre ejes; muros de 150 mm.",
+    "Mobiliario esquemático; revisar encuentros y circulación."
+  ],
+  "operations": [
+    {
+      "type": "wall",
+      "start": [
+        0,
+        0
+      ],
+      "end": [
+        6000,
+        0
+      ],
+      "thickness": 150,
+      "openings": [
+        {
+          "offset": 800,
+          "width": 900,
+          "kind": "door"
+        }
+      ]
+    },
+    {
+      "type": "wall",
+      "start": [
+        6000,
+        0
+      ],
+      "end": [
+        6000,
+        4000
+      ],
+      "thickness": 150,
+      "openings": []
+    },
+    {
+      "type": "wall",
+      "start": [
+        6000,
+        4000
+      ],
+      "end": [
+        0,
+        4000
+      ],
+      "thickness": 150,
+      "openings": [
+        {
+          "offset": 2000,
+          "width": 1800,
+          "kind": "window"
+        }
+      ]
+    },
+    {
+      "type": "wall",
+      "start": [
+        0,
+        4000
+      ],
+      "end": [
+        0,
+        0
+      ],
+      "thickness": 150,
+      "openings": []
+    },
+    {
+      "type": "rect",
+      "origin": [
+        300,
+        1700
+      ],
+      "width": 1400,
+      "height": 2000
+    },
+    {
+      "type": "rect",
+      "origin": [
+        380,
+        3150
+      ],
+      "width": 560,
+      "height": 400
+    },
+    {
+      "type": "rect",
+      "origin": [
+        1060,
+        3150
+      ],
+      "width": 560,
+      "height": 400
+    },
+    {
+      "type": "line",
+      "start": [
+        300,
+        3000
+      ],
+      "end": [
+        1700,
+        3000
+      ],
+      "layer": "MOBILIARIO"
+    },
+    {
+      "type": "rect",
+      "origin": [
+        4400,
+        2900
+      ],
+      "width": 1300,
+      "height": 650
+    },
+    {
+      "type": "circle",
+      "center": [
+        5050,
+        2550
+      ],
+      "radius": 260
+    },
+    {
+      "type": "rect",
+      "origin": [
+        3000,
+        300
+      ],
+      "width": 2400,
+      "height": 600
+    },
+    {
+      "type": "line",
+      "start": [
+        4200,
+        300
+      ],
+      "end": [
+        4200,
+        900
+      ],
+      "layer": "MOBILIARIO"
+    },
+    {
+      "type": "text",
+      "text": "ESTUDIO",
+      "at": [
+        2400,
+        2000
+      ],
+      "height": 180
+    },
+    {
+      "type": "text",
+      "text": "24 m2 entre ejes",
+      "at": [
+        2350,
+        1750
+      ],
+      "height": 110
+    },
+    {
+      "type": "dimension",
+      "p1": [
+        0,
+        0
+      ],
+      "p2": [
+        6000,
+        0
+      ],
+      "distance": -600
+    },
+    {
+      "type": "dimension",
+      "p1": [
+        6000,
+        0
+      ],
+      "p2": [
+        6000,
+        4000
+      ],
+      "distance": -600
+    }
+  ]
+}

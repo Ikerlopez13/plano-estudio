@@ -1,0 +1,20 @@
+# Blueprint de despliegue en Render (https://render.com).
+# Render inyecta la variable PORT automáticamente; la app ya la lee.
+services:
+  - type: web
+    name: plano-estudio
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.6"          # wheels estables para ezdxf/PyMuPDF/Pillow
+      - key: PLANO_BIND
+        value: "0.0.0.0"          # escuchar en todas las interfaces (necesario en Render)
+      - key: PLANO_ALLOWED_HOSTS
+        value: "*"                # la contraseña es la que protege el acceso
+      - key: PLANO_PASSWORD
+        sync: false               # se define en el panel de Render (secreto)
+      - key: OPENAI_API_KEY
+        sync: false               # opcional; se define en el panel de Render (secreto)
